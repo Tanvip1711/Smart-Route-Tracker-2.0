@@ -1,57 +1,105 @@
+
 #include "backend/graph/Graph.h"
+#include "data/MapDataLoader.h"
 #include "backend/routing/Router.h"
+
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 
-void printRoute(const RouteResult& route) {
-    if (!route.found) {
+void printResult(const std::string& title, const RouteResult& result) {
+    std::cout << "\n===== " << title << " =====\n";
+
+    if (!result.found) {
         std::cout << "No route found.\n";
         return;
     }
 
-    for (std::size_t i = 0; i < route.path.size(); ++i) {
-        if (i > 0) std::cout << " -> ";
-        std::cout << route.path[i];
-    }
+    std::cout << "Route found successfully.\n";
+    std::cout << "Number of nodes in route: "
+              << result.path.size() << "\n";
 
-    std::cout << "\nDistance: " << route.distanceKm << " km\n";
-    std::cout << "Estimated travel time: "
-              << route.travelTimeMinutes << " minutes\n";
+    std::cout << std::fixed << std::setprecision(3);
+    std::cout << "Distance: "
+              << result.distanceKm << " km\n";
+
+    std::cout << "Estimated time: "
+              << result.travelTimeMinutes << " minutes\n";
+
+    if (!result.path.empty()) {
+        std::cout << "Start node: " << result.path.front() << "\n";
+        std::cout << "End node: " << result.path.back() << "\n";
+    }
 }
 
 int main() {
     Graph graph;
+    MapDataLoader loader;
+    MapLoadStats stats;
+    std::string error;
 
-    graph.addNode({"RAVET", "Ravet", 18.65, 73.76});
-    graph.addNode({"AKURDI", "Akurdi", 18.65, 73.77});
-    graph.addNode({"NIGDI", "Nigdi", 18.65, 73.77});
-    graph.addNode({"CHINCHWAD", "Chinchwad", 18.63, 73.78});
+    std::cout << "Loading VIT Bibwewadi road network...\n";
 
-    graph.addRoad("RAVET", "AKURDI", 2.0, 30.0);
-    graph.addRoad("AKURDI", "NIGDI", 1.5, 25.0);
-    graph.addRoad("RAVET", "NIGDI", 4.5, 40.0);
-    graph.addRoad("NIGDI", "CHINCHWAD", 2.0, 30.0);
+    if (!loader.loadGeoJson(
+        "data/raw/vit_bibwewadi_roads.geojson",
+        graph,
+        stats,
+        error
+    )) {
+        std::cout << "ERROR: " << error << "\n";
+        return 1;
+    }
+
+    std::cout << "\nGraph loaded successfully.\n";
+    std::cout << "Nodes: " << graph.nodeCount() << "\n";
+    std::cout << "Directed edges: " << graph.edgeCount() << "\n";
+
+    // Find the nearest road nodes to the test coordinates.
+    std::string source = loader.findNearestNode(
+        graph, 18.46416, 73.867688
+    );
+
+    std::string destination = loader.findNearestNode(
+        graph, 18.4707787, 73.85693055
+    );
+
+    if (source.empty() || destination.empty()) {
+        std::cout << "Could not find road nodes for test coordinates.\n";
+        return 1;
+    }
+
+    std::cout << "\n===== ROUTE TEST LOCATIONS =====\n";
+    std::cout << "Source: " << source << "\n";
+    std::cout << "Destination: " << destination << "\n";
 
     Router router(graph);
 
-       std::cout << "\n===== SHORTEST DISTANCE ROUTE =====\n";
-    auto shortest = router.dijkstra("RAVET", "CHINCHWAD");
-    printRoute(shortest);
+    RouteResult dijkstraResult =
+        router.dijkstra(source, destination);
 
-    std::cout << "\n===== FASTEST ROUTE =====\n";
-    auto fastest = router.fastestRoute("RAVET", "CHINCHWAD");
-    printRoute(fastest);
+    RouteResult astarResult =
+        router.astar(source, destination);
 
-    std::cout << "\n===== A* ROUTING =====\n";
-    auto astarRoute = router.astar("RAVET", "CHINCHWAD");
-    printRoute(astarRoute);
+    RouteResult fastestResult =
+        router.fastestRoute(source, destination);
 
-    std::cout << "\n===== ROAD BLOCKING TEST =====\n";
+    printResult("DIJKSTRA SHORTEST ROUTE", dijkstraResult);
+    printResult("A STAR SHORTEST ROUTE", astarResult);
+    printResult("FASTEST ROUTE", fastestResult);
 
-    graph.setRoadBlocked("AKURDI", "NIGDI", true);
+    std::cout << "\n===== ALGORITHM COMPARISON =====\n";
 
-    auto reroute = router.fastestRoute("RAVET", "CHINCHWAD");
-    printRoute(reroute);
+    if (dijkstraResult.found && astarResult.found) {
+        if (std::abs(
+            dijkstraResult.distanceKm - astarResult.distanceKm
+        ) < 0.000001) {
+            std::cout << "PASS: Dijkstra and A* found equal distances.\n";
+        } else {
+            std::cout << "FAIL: Dijkstra and A* distances differ.\n";
+        }
+    } else {
+        std::cout << "FAIL: One or both algorithms could not find a route.\n";
+    }
 
     return 0;
 }

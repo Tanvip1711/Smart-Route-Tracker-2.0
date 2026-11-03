@@ -1,39 +1,77 @@
 #include "Graph.h"
-#include <stdexcept>
 
 bool Graph::addNode(const Node& node) {
-    if (node.id.empty() || nodes.count(node.id)) return false;
+    if (node.id.empty() || nodes.count(node.id)) {
+        return false;
+    }
+
     nodes.emplace(node.id, node);
     adjacency.emplace(node.id, std::vector<Edge>{});
+
     return true;
 }
 
-bool Graph::addRoad(const std::string& from, const std::string& to,
-                    double distanceKm, double speedKmph, bool bidirectional) {
-    if (!hasNode(from) || !hasNode(to) || from == to ||
-        distanceKm <= 0.0 || speedKmph <= 0.0) return false;
-
-    adjacency[from].push_back({to, distanceKm, speedKmph, false});
-    if (bidirectional) {
-        adjacency[to].push_back({from, distanceKm, speedKmph, false});
+bool Graph::addRoad(
+    const std::string& from,
+    const std::string& to,
+    double distanceKm,
+    double speedKmph,
+    bool bidirectional,
+    const std::string& osmWayId,
+    const std::string& roadName,
+    const std::string& roadType,
+    bool speedEstimated
+) {
+    if (!hasNode(from) || !hasNode(to) ||
+        from == to || distanceKm <= 0.0 ||
+        speedKmph <= 0.0) {
+        return false;
     }
+
+    Edge forward;
+    forward.to = to;
+    forward.distanceKm = distanceKm;
+    forward.speedKmph = speedKmph;
+    forward.osmWayId = osmWayId;
+    forward.roadName = roadName;
+    forward.roadType = roadType;
+    forward.speedEstimated = speedEstimated;
+
+    adjacency[from].push_back(forward);
+
+    if (bidirectional) {
+        Edge reverse = forward;
+        reverse.to = from;
+        adjacency[to].push_back(reverse);
+    }
+
     return true;
 }
 
-bool Graph::setRoadBlocked(const std::string& from, const std::string& to, bool blocked) {
-    if (!hasNode(from) || !hasNode(to)) return false;
+bool Graph::setRoadBlocked(
+    const std::string& from,
+    const std::string& to,
+    bool blocked
+) {
+    if (!hasNode(from) || !hasNode(to)) {
+        return false;
+    }
+
     bool found = false;
+
     for (auto& edge : adjacency[from]) {
         if (edge.to == to) {
             edge.blocked = blocked;
             found = true;
         }
     }
-    // If the reverse connection exists, treat it as the other direction
-    // of the same two-way road. One-way roads have no reverse edge.
+
     for (auto& edge : adjacency[to]) {
-        if (edge.to == from) edge.blocked = blocked;
+        if (edge.to == from) {
+            edge.blocked = blocked;
+        }
     }
+
     return found;
 }
 
@@ -43,18 +81,43 @@ bool Graph::hasNode(const std::string& id) const {
 
 const Node* Graph::getNode(const std::string& id) const {
     auto it = nodes.find(id);
-    return it == nodes.end() ? nullptr : &it->second;
+
+    if (it == nodes.end()) {
+        return nullptr;
+    }
+
+    return &it->second;
 }
 
-const std::vector<Edge>& Graph::getEdges(const std::string& id) const {
+const std::vector<Edge>& Graph::getEdges(
+    const std::string& id
+) const {
     static const std::vector<Edge> empty;
+
     auto it = adjacency.find(id);
-    return it == adjacency.end() ? empty : it->second;
+
+    if (it == adjacency.end()) {
+        return empty;
+    }
+
+    return it->second;
+}
+
+const std::unordered_map<std::string, Node>&
+Graph::getNodes() const {
+    return nodes;
 }
 
 std::size_t Graph::nodeCount() const {
     return nodes.size();
 }
-const std::unordered_map<std::string, Node>& Graph::getNodes() const {
-    return nodes;
+
+std::size_t Graph::edgeCount() const {
+    std::size_t count = 0;
+
+    for (const auto& entry : adjacency) {
+        count += entry.second.size();
+    }
+
+    return count;
 }
