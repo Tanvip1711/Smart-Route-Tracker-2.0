@@ -36,14 +36,21 @@ RouteResult Router::dijkstra(
     const std::string& source,
     const std::string& destination
 ) const {
-    return findRoute(source, destination, false);
+    return findRoute(source, destination, false, false);
 }
 
 RouteResult Router::astar(
     const std::string& source,
     const std::string& destination
 ) const {
-    return findRoute(source, destination, true);
+    return findRoute(source, destination, true, false);
+}
+
+RouteResult Router::fastestRoute(
+    const std::string& source,
+    const std::string& destination
+) const {
+    return findRoute(source, destination, false, true);
 }
 
 double Router::heuristicScale() const {
@@ -59,8 +66,10 @@ double Router::heuristicScale() const {
                 haversineDistance(node, *destinationNode);
 
             if (straightDistance > 0.000001) {
-                double ratio = edge.distanceKm / straightDistance;
-                scale = std::min(scale, ratio);
+                scale = std::min(
+                    scale,
+                    edge.distanceKm / straightDistance
+                );
             }
         }
     }
@@ -71,7 +80,8 @@ double Router::heuristicScale() const {
 RouteResult Router::findRoute(
     const std::string& source,
     const std::string& destination,
-    bool useAStar
+    bool useAStar,
+    bool optimizeTime
 ) const {
     RouteResult result;
 
@@ -83,6 +93,8 @@ RouteResult Router::findRoute(
     const double scale = useAStar ? heuristicScale() : 0.0;
 
     auto heuristic = [&](const std::string& id) {
+        if (!useAStar) return 0.0;
+
         const Node* current = graph.getNode(id);
         const Node* target = graph.getNode(destination);
 
@@ -117,14 +129,16 @@ RouteResult Router::findRoute(
             continue;
         }
 
-        if (current == destination) {
-            break;
-        }
+        if (current == destination) break;
 
         for (const auto& edge : graph.getEdges(current)) {
             if (edge.blocked) continue;
 
-            double candidate = currentDistance + edge.distanceKm;
+            double edgeCost = optimizeTime
+                ? edge.travelTimeMinutes()
+                : edge.distanceKm;
+
+            double candidate = currentDistance + edgeCost;
 
             auto it = distance.find(edge.to);
 
@@ -133,10 +147,8 @@ RouteResult Router::findRoute(
                 previous[edge.to] = current;
                 previousEdge[edge.to] = edge;
 
-                double estimatedTotal = candidate + heuristic(edge.to);
-
                 pq.push({
-                    estimatedTotal,
+                    candidate + heuristic(edge.to),
                     candidate,
                     edge.to
                 });
@@ -144,10 +156,8 @@ RouteResult Router::findRoute(
         }
     }
 
-    auto destinationIt = distance.find(destination);
-
-    if (destinationIt == distance.end() ||
-        !std::isfinite(destinationIt->second)) {
+    if (distance.find(destination) == distance.end() ||
+        !std::isfinite(distance[destination])) {
         return result;
     }
 
@@ -161,8 +171,10 @@ RouteResult Router::findRoute(
             return RouteResult{};
         }
 
-        result.travelTimeMinutes +=
-            previousEdge.at(current).travelTimeMinutes();
+        const Edge& edge = previousEdge.at(current);
+
+        result.distanceKm += edge.distanceKm;
+        result.travelTimeMinutes += edge.travelTimeMinutes();
 
         current = it->second;
         result.path.push_back(current);
@@ -170,8 +182,6 @@ RouteResult Router::findRoute(
 
     std::reverse(result.path.begin(), result.path.end());
 
-    result.distanceKm = destinationIt->second;
     result.found = true;
-
     return result;
 }

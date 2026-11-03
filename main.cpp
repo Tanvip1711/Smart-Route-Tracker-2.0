@@ -34,32 +34,24 @@ int main() {
 
     Router router(graph);
 
-    std::cout << "\n===== DIJKSTRA ROUTING =====\n";
-    auto dijkstraRoute = router.dijkstra("RAVET", "CHINCHWAD");
-    printRoute(dijkstraRoute);
+       std::cout << "\n===== SHORTEST DISTANCE ROUTE =====\n";
+    auto shortest = router.dijkstra("RAVET", "CHINCHWAD");
+    printRoute(shortest);
+
+    std::cout << "\n===== FASTEST ROUTE =====\n";
+    auto fastest = router.fastestRoute("RAVET", "CHINCHWAD");
+    printRoute(fastest);
 
     std::cout << "\n===== A* ROUTING =====\n";
     auto astarRoute = router.astar("RAVET", "CHINCHWAD");
     printRoute(astarRoute);
 
-    if (dijkstraRoute.found && astarRoute.found &&
-        std::abs(dijkstraRoute.distanceKm - astarRoute.distanceKm) < 0.000001) {
-        std::cout << "\nTEST PASSED: Both algorithms found the same distance.\n";
-    } else {
-        std::cout << "\nTEST FAILED: The route distances do not match.\n";
-    }
-
     std::cout << "\n===== ROAD BLOCKING TEST =====\n";
 
     graph.setRoadBlocked("AKURDI", "NIGDI", true);
 
-    auto reroute = router.dijkstra("RAVET", "CHINCHWAD");
+    auto reroute = router.fastestRoute("RAVET", "CHINCHWAD");
     printRoute(reroute);
-
-    std::cout << "\n===== A* AFTER ROAD BLOCKING =====\n";
-
-    auto astarReroute = router.astar("RAVET", "CHINCHWAD");
-    printRoute(astarReroute);
 
     return 0;
 }

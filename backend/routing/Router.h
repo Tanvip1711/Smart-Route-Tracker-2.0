@@ -24,13 +24,19 @@ public:
         const std::string& destination
     ) const;
 
+    RouteResult fastestRoute(
+        const std::string& source,
+        const std::string& destination
+    ) const;
+
 private:
     const Graph& graph;
 
     RouteResult findRoute(
         const std::string& source,
         const std::string& destination,
-        bool useAStar
+        bool useAStar,
+        bool optimizeTime
     ) const;
 
     double heuristicScale() const;
