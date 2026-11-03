@@ -55,3 +55,6 @@ const std::vector<Edge>& Graph::getEdges(const std::string& id) const {
 std::size_t Graph::nodeCount() const {
     return nodes.size();
 }
+const std::unordered_map<std::string, Node>& Graph::getNodes() const {
+    return nodes;
+}

@@ -13,8 +13,25 @@ struct RouteResult {
 class Router {
 public:
     explicit Router(const Graph& graph);
-    RouteResult dijkstra(const std::string& source, const std::string& destination) const;
+
+    RouteResult dijkstra(
+        const std::string& source,
+        const std::string& destination
+    ) const;
+
+    RouteResult astar(
+        const std::string& source,
+        const std::string& destination
+    ) const;
 
 private:
     const Graph& graph;
+
+    RouteResult findRoute(
+        const std::string& source,
+        const std::string& destination,
+        bool useAStar
+    ) const;
+
+    double heuristicScale() const;
 };

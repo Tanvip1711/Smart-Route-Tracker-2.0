@@ -15,6 +15,7 @@ public:
     bool hasNode(const std::string& id) const;
     const Node* getNode(const std::string& id) const;
     const std::vector<Edge>& getEdges(const std::string& id) const;
+    const std::unordered_map<std::string, Node>& getNodes() const;
     std::size_t nodeCount() const;
 
 private:
