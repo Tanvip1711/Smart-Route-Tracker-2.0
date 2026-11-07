@@ -20,3 +20,10 @@ On Windows PowerShell, run `smart_route_tracker.exe` after compilation.
 
 ## Next
 - Add unit tests, then load real OpenStreetMap road data.
+
+## 🌐 Live Demo
+
+Try **Smart Route Tracker 2.0** here:
+
+[Open Smart Route Tracker 2.0](https://candid-tanuki-f80462.netlify.app)
+
