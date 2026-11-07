@@ -1,0 +1,332 @@
+
+/* ==========================================
+   SMART ROUTE TRACKER 2.0
+   Main Stylesheet
+========================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f3f6fb;
+    color: #1e293b;
+    min-height: 100vh;
+}
+
+/* NAVIGATION BAR */
+
+.navbar {
+    background: #142b4a;
+    color: white;
+    padding: 18px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    font-size: 32px;
+}
+
+.logo h1 {
+    font-size: 21px;
+    letter-spacing: 0.3px;
+}
+
+.logo p {
+    font-size: 12px;
+    color: #b8c9df;
+    margin-top: 3px;
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #d7e5f5;
+}
+
+.status-dot {
+    height: 9px;
+    width: 9px;
+    background: #35d49a;
+    border-radius: 50%;
+}
+
+/* MAIN DASHBOARD */
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 24px;
+    padding: 30px 5%;
+    max-width: 1600px;
+    margin: auto;
+}
+
+/* SEARCH PANEL */
+
+.search-panel {
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(20, 43, 74, 0.07);
+    height: fit-content;
+}
+
+.search-panel h2,
+.map-heading h2 {
+    font-size: 21px;
+    color: #142b4a;
+}
+
+.subtitle,
+.map-heading p {
+    color: #7b8798;
+    font-size: 13px;
+    margin-top: 7px;
+    margin-bottom: 25px;
+}
+
+/* INPUT FIELDS */
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 9px;
+    color: #34445b;
+}
+
+/* Text input and dropdown share the same styling */
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    height: 46px;
+    padding: 0 13px;
+    border: 1px solid #dce3ed;
+    border-radius: 8px;
+    outline: none;
+    background-color: #ffffff;
+    color: #34445b;
+    font-family: inherit;
+    font-size: 13px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #3478d4;
+    box-shadow: 0 0 0 3px rgba(52, 120, 212, 0.1);
+}
+
+/* CUSTOM ROUTE DROPDOWN */
+
+.input-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    padding-right: 38px;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232463b5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+    background-repeat: no-repeat;
+    background-position: right 13px center;
+    background-size: 16px;
+}
+
+.input-group select:hover {
+    border-color: #9bb9df;
+}
+
+.input-group select option {
+    background: #ffffff;
+    color: #34445b;
+    padding: 10px;
+}
+
+/* BUTTON */
+
+#find-route-btn {
+    width: 100%;
+    padding: 14px;
+    background: #2463b5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#find-route-btn:hover {
+    background: #174b91;
+    transform: translateY(-1px);
+}
+
+#find-route-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.message {
+    font-size: 12px;
+    color: #7b8798;
+    margin-top: 14px;
+    line-height: 1.5;
+}
+
+/* ROUTE DETAILS */
+
+.route-details {
+    margin-top: 28px;
+    border-top: 1px solid #e8edf3;
+    padding-top: 22px;
+}
+
+.route-details h3 {
+    font-size: 15px;
+    margin-bottom: 16px;
+    color: #142b4a;
+}
+
+.detail-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f5f8fc;
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.detail-card span {
+    font-size: 12px;
+    color: #748197;
+}
+
+.detail-card strong {
+    font-size: 13px;
+    color: #2463b5;
+}
+
+/* MAP SECTION */
+
+.map-section {
+    background: white;
+    padding: 22px;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(20, 43, 74, 0.07);
+}
+
+.map-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.map-heading p {
+    margin-bottom: 18px;
+}
+
+.map-label {
+    font-size: 11px;
+    color: #2463b5;
+    background: #eaf2ff;
+    padding: 7px 11px;
+    border-radius: 20px;
+}
+
+#map {
+    height: 560px;
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #e3eaf2;
+    z-index: 1;
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #8792a3;
+    font-size: 12px;
+}
+
+/* RESPONSIVE DESIGN */
+
+@media (max-width: 850px) {
+
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    #map {
+        height: 400px;
+    }
+}
+
+@media (max-width: 500px) {
+
+    .navbar {
+        padding: 15px 4%;
+    }
+
+    .logo h1 {
+        font-size: 16px;
+    }
+
+    .system-status {
+        font-size: 11px;
+    }
+
+    .dashboard {
+        padding: 18px 4%;
+    }
+
+    .search-panel {
+        padding: 20px;
+    }
+
+    .map-section {
+        padding: 16px;
+    }
+}
+
+#use-current-location-btn {
+    width: 100%;
+    margin-top: 9px;
+    padding: 10px;
+    background: #eaf2ff;
+    color: #2463b5;
+    border: 1px solid #cfe0f7;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#use-current-location-btn:disabled {
+    opacity: 0.65;
+    cursor: wait;
+}

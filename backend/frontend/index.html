@@ -1,0 +1,163 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Route Tracker 2.0</title>
+
+    <!-- Leaflet Map CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <!-- Our stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <span class="logo-icon">📍</span>
+            <div>
+                <h1>Smart Route Tracker</h1>
+                <p>Navigate smarter. Travel better.</p>
+            </div>
+        </div>
+
+        <div class="system-status">
+            <span class="status-dot"></span>
+            System Ready
+        </div>
+    </header>
+
+    <main class="dashboard">
+
+        <section class="search-panel">
+
+            <h2>Plan Your Journey</h2>
+            <p class="subtitle">
+                Find the best route to your destination.
+            </p>
+
+            <!-- Starting Point -->
+            <div class="input-group">
+    <label for="source">Starting Point</label>
+
+    <input
+        type="text"
+        id="source"
+        placeholder="Enter your starting location"
+    >
+
+    <button type="button" id="use-current-location-btn">
+        📍 Use My Current Location
+    </button>
+</div>
+
+            <!-- Destination -->
+            <div class="input-group">
+                <label for="destination">Destination</label>
+                <input
+                    type="text"
+                    id="destination"
+                    placeholder="Enter your destination"
+                >
+            </div>
+
+            <!-- Route Selection -->
+            <div class="input-group">
+                <label for="algorithm">Choose Your Route</label>
+
+                <select id="algorithm">
+
+                    <option value="best" selected>
+                        ⭐ Best Route (Recommended)
+                    </option>
+
+                    <option value="shortest">
+                        Shortest Route – Less Distance
+                    </option>
+
+                    <option value="fastest">
+                        Fastest Route – Save Time
+                    </option>
+
+                </select>
+            </div>
+
+            <!-- Find Route Button -->
+            <button id="find-route-btn">
+                Find Best Route
+            </button>
+
+            <!-- Status Message -->
+            <p id="message" class="message">
+                Enter your locations to get started.
+            </p>
+
+            <!-- Journey Overview -->
+            <div class="route-details">
+
+                <h3>Journey Overview</h3>
+
+                <div class="detail-card">
+                    <span>Distance</span>
+                    <strong id="distance">-- km</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Estimated Time</span>
+                    <strong id="eta">-- min</strong>
+                </div>
+
+                <div class="detail-card">
+                    <span>Route Status</span>
+                    <strong id="route-status">
+                        Not calculated
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Map Section -->
+        <section class="map-section">
+
+            <div class="map-heading">
+
+                <div>
+                    <h2>Live Map</h2>
+                    <p>Explore your route visually.</p>
+                </div>
+
+                <span class="map-label">
+                    OpenStreetMap
+                </span>
+
+            </div>
+
+            <div id="map"></div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>
+            Smart Route Tracker 2.0 |
+            Intelligent Navigation System
+        </p>
+    </footer>
+
+    <!-- Leaflet Map JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Our JavaScript -->
+    <script src="app.js"></script>
+
+</body>
+</html>
