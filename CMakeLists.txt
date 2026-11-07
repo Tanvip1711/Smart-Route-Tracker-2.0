@@ -35,5 +35,7 @@ target_include_directories(route_tracker_api PRIVATE
     data
 )
 
-# Windows networking library required by httplib
-target_link_libraries(route_tracker_api PRIVATE ws2_32)
+# Platform-specific networking library
+if(WIN32)
+    target_link_libraries(route_tracker_api PRIVATE ws2_32)
+endif()

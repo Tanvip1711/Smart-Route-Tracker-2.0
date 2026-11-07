@@ -6,7 +6,7 @@
 
 
 // 1. INITIALISE LEAFLET MAP
-
+const API_BASE_URL = window.API_BASE_URL || 'http://localhost:8080';
 const map = L.map('map').setView([18.5204, 73.8567], 13);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -97,8 +97,7 @@ async function checkBackend() {
 
     try {
 
-        const response = await fetch('http://localhost:8080/health');
-
+const response = await fetch(`${API_BASE_URL}/health`);
         if (!response.ok) {
             throw new Error('Backend response was not successful');
         }
@@ -185,8 +184,7 @@ async function calculateRoute(source, destination) {
             ? 'fastest'
             : selectedAlgorithm;
 
-    const response = await fetch('http://localhost:8080/route', {
-
+const response = await fetch(`${API_BASE_URL}/route`, {
         method: 'POST',
 
         headers: {
